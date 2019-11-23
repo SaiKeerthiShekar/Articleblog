@@ -1,0 +1,235 @@
+---
+swagger: '2.0'
+info:
+  description: Creation of News Article Blog.
+  version: 1.0.0
+  title: News_cms Article.
+tags:
+  - name: News_cms Article.
+    description: Creation, Retrieval, Modification, and Deletion resources for Data Model.
+  - name: meta
+    description: 'Designing the article blog that allows the authenticated the users to create , modify or delete the created articles'
+schemes:
+ - https
+ - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  "/users/registration":
+    post:
+      tags:
+        - users
+      summary: Creates new user.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      description: Adds a new registered user
+
+      parameters:
+        - in: body
+          name: request body
+          description: PostRegistrationModel
+          required: true
+          schema:
+            $ref: '#/definitions/UsersPostBody'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: 'Resource URI of the Registration model created'
+              type: 'string'
+          schema:
+            $ref: "#/definitions/UsersPostResponseBody"
+        '400':
+          $ref: "#/responses/BadRequest"
+        '401':
+          $ref: "#/responses/Unauthorized"
+        '500':
+          $ref: "#/responses/InternalServerError"
+
+  "/users/logged_in":
+    post:
+      tags:
+        - users
+      summary: Authenticates the registered user.
+      consumes:
+        - application/json
+      produces:
+      - application/json
+      description: Allows the registered user to login
+
+      parameters:
+        - in: body
+          name: request body
+          description: Login
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: 'Resource URI of the login model created'
+              type: 'string'
+          schema:
+            $ref: "#/definitions/UsersPostResponseBody"
+        '400':
+          $ref: "#/responses/BadRequest"
+        '401':
+          $ref: "#/responses/Unauthorized"
+        '500':
+          $ref: "#/responses/InternalServerError"
+
+  "/users/logged_out":
+    delete:
+      tags:
+        - users
+      summary: Authenticates the registered user to logout.
+      consumes:
+        - application/json
+      produces:
+      - application/json
+      description: Allows the registered user to logout
+
+      parameters:
+        - in: body
+          name: request body
+          description: Logout
+          required: true
+          schema:
+            $ref: '#/definitions/Logout'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: 'Resource URI of the logout model created'
+              type: 'string'
+          schema:
+            $ref: "#/definitions/UsersDeleteResponseBody"
+        '400':
+          $ref: "#/responses/BadRequest"
+        '401':
+          $ref: "#/responses/Unauthorized"
+        '500':
+          $ref: "#/responses/InternalServerError"
+
+# Descriptions of common responses
+responses:
+  BadRequest:
+    description: Bad Request
+  Unauthorized:
+    description: Authentication failed
+  Forbidden:
+    description: Forbidden
+  NotFound:
+    description: Resource not found
+  Conflict:
+    description: Resource conflict
+  InternalServerError:
+    description: Internal Server Error
+
+definitions:
+   UsersPostBody:
+      properties:
+        firstname:
+          type: string
+          description: First Name that user registers. Must be 3 to 256 characters
+          example: abc
+          minLength: 3
+          maxLength: 256
+        lastname:
+          type: string
+          description: Last Name that user registers.
+          example: def
+          minLength: 3
+          maxLength: 256
+        email:
+          type: string
+          description: The unique email of the user in Registration model.
+          example: abc@example.com
+        password:
+          type: string
+          description: The password for the unique email id to login.Must be 6 to 256 characters
+          example: abc@123
+      required:
+      - firstname
+      - email
+      - password
+
+   Login:
+      properties:
+        email:
+          type: string
+          description: The unique email for the user to login.
+          example: abc@example.com
+        password:
+          type: string
+          description: The password for the unique email id to login.Must be 6 to 256 characters
+          example: abc123
+      required:
+      - email
+      - password
+
+   Logout:
+      properties:
+        email:
+          type: string
+          description: The unique id to identify the specific user.
+          example: abc@example.com
+
+      required:
+      - email
+
+   UsersPostResponseBody:
+     properties:
+        id:
+          type: integer
+          description: The unique identifier of the user model.
+          example: 123
+        fisrtname:
+          type: string
+          description: The unique name of the user model. Must be 3 to 256 characters
+          example: "abc"
+          minLength: 3
+          maxLength: 256
+        lastname:
+          type: string
+          description: The unique name of the user model. Must be 3 to 256 characters
+          example: "def"
+          minLength: 3
+          maxLength: 256
+        email:
+          type: string
+          description: The email_id of the requesting user.
+          example: "abc@example.com"
+        password:
+          type: string
+          description: The type of the user model.
+          example: "abc@123"
+        createdAt:
+          description: Timestamp of the creation of user model.
+          example: "2018-05-16T08:37:59.000Z"
+          format: date-time
+          type: string
+        updatedAt:
+          description: Timestamp of the latest update to the user model
+          example: "2018-05-16T08:37:59.000Z"
+          format: date-time
+          type: string
+
+   UsersDeleteResponseBody:
+      properties:
+         status:
+           type: integer
+           description: The status of the logout request.
+           example: 200
+         loggedout:
+           type: string
+           description: Returns Boolean value for the logout request.
+           example: "true"
